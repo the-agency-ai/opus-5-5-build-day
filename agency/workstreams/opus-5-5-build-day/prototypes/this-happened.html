@@ -336,6 +336,9 @@ textarea{width:100%;min-height:76px;resize:vertical;border:1px solid var(--line)
 .tri-err{border:1px solid var(--line);border-left:3px solid var(--danger);border-radius:10px;padding:12px 14px;display:grid;gap:8px}
 .tri-err .row{display:flex;gap:8px;flex-wrap:wrap}
 .tri-live{display:grid;gap:14px}
+.scn-box{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.scn-box summary{cursor:pointer;font-weight:600;color:var(--muted)}
+.scn-box[open] summary{color:var(--ink)}
 .scn{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto;gap:12px;align-items:end}
 .scn label{display:grid;gap:6px;font-weight:600;font-size:14px}
 .scn select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
@@ -1424,9 +1427,8 @@ let nextKey = 7, selMine = null, selQueue = null, running = false, bundleOpen = 
 // The reporter's own words are the report's headline. The automatic read stays in the diagnosis.
 function ownTitle(note) {
   const n = String(note || '').trim().replace(/\s+/g, ' '); if (!n) return null;
-  const first = n.split(/(?<=[.!?])\s/)[0];
-  if (first.length <= 90) return first.replace(/[.]$/, '');
-  const k = first.lastIndexOf(' ', 89); return first.slice(0, k > 30 ? k : 89) + '…';
+  if (n.length <= 140) return n;
+  const k = n.lastIndexOf(' ', 139); return n.slice(0, k > 60 ? k : 139) + '…';
 }
 function addReport({bundle, removed, diag, origin, t, key, captureMs}) {
   const own = ownTitle(bundle.note);
@@ -1677,7 +1679,7 @@ function mergeFix() {
 
 // ================= Live triage: real Claude via the sample capability; the scripted run is the fallback =================
 // window.claude exists only inside the claude.ai viewer. use() can take ~10 s to resolve null, so it resolves in the background.
-let sampleFn = null, sampleState = 'pending', liveOn = true, promptOpen = false;
+let sampleFn = null, sampleState = 'pending', liveOn = true, promptOpen = false, scnOpen = false;
 const samplePromise = (async () => {
   try { return window.claude ? (await window.claude.use('sample')) || null : null; } catch { return null; }
 })().then(fn => { sampleFn = fn; sampleState = fn ? 'ready' : 'off'; if (!running) renderAll(); return fn; });
@@ -1978,12 +1980,15 @@ function renderQueue() {
         <td class="mono">${r.key}</td><td class="t">${esc(r.diag.title)}</td><td>${ago(r.t)}</td>
         <td>${r.origin === 'conversation' ? 'Assistant' : '! button'}</td><td><span class="sp s${r.status}">${STATUS[r.status]}</span></td></tr>`).join('')}</tbody>
     </table></div>
-    <div class="sec-h"><h3>Try it with other input</h3><span class="sub">files a new report through the same pipeline, so the triage changes with it</span></div>
+    <details class="scn-box" id="scn-box" ${scnOpen ? 'open' : ''}>
+    <summary>Demo only: file a made-up test report</summary>
+    <p class="sim">Not your report. This files a new, made-up report from one of these scenarios, so you can watch the triage change with different input.</p>
     <div class="scn">
       <label for="scn-kind">Scenario<select id="scn-kind" ${running ? 'disabled' : ''}>${Object.entries(SCENARIOS).map(([k, s]) => `<option value="${k}"${k === scn.kind ? ' selected' : ''}>${esc(s.label)}</option>`).join('')}</select></label>
-      <label for="scn-note">What the user wrote<textarea id="scn-note" ${running ? 'disabled' : ''}></textarea></label>
-      <div><button class="btn-run" id="scn-file" ${running ? 'disabled' : ''}>File as a new report</button></div>
+      <label for="scn-note">Text for the test report<textarea id="scn-note" ${running ? 'disabled' : ''}></textarea></label>
+      <div><button class="btn-run" id="scn-file" ${running ? 'disabled' : ''}>File test report</button></div>
     </div>
+    </details>
   </div>
 
   <div class="panel">
@@ -2080,6 +2085,7 @@ function renderQueue() {
   $('#scn-kind').addEventListener('change', e => { scn.kind = e.target.value; scn.note = SCENARIOS[scn.kind].note; $('#scn-note').value = scn.note; });
   $('#scn-note').addEventListener('input', e => { scn.note = e.target.value; });
   $('#scn-file').addEventListener('click', fileScenario);
+  $('#scn-box').addEventListener('toggle', e => { scnOpen = e.currentTarget.open; });
   if (afId && $('#' + afId)) { const n = $('#' + afId); n.focus({preventScroll:true}); if (afSel) n.setSelectionRange(...afSel); }
   $('#run').addEventListener('click', runAgent);
   $('#merge').addEventListener('click', mergeFix);
