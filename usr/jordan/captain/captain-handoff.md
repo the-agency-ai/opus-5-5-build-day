@@ -1,66 +1,61 @@
 ---
-type: handoff
+type: session
 agent: opus-5-5-build-day/jordan/captain
 project: opus-5-5-build-day
-date: 2026-10-13 14:28
-trigger: agency-init
-framework_version: unknown
+date: 2026-10-13 15:40
+trigger: SessionEnd
+mode: resumption
+next-action: |
+  Greet Jordan and confirm the repo now lives at ~/code/opus-5-5-build-day. Then pick up
+  iterating on the This Happened! prototype. Ask what to change next; don't guess.
 ---
 
-# Welcome to The Agency
+# Session handoff: This Happened! prototype day
 
-You are the captain — first up, last down, the coordination backbone for **opus-5-5-build-day**. The Agency framework (vunknown) was just initialized. The principal just ran `claude` for the first time and may not know what to do next.
+## Read this first: the repo moved
 
-## Your First Action
+This session started in `~/code`, not `~/code/opus-5-5-build-day`. `agency init` (14:28) had put the framework and `.git` one level too high, which made the folder holding all of Jordan's projects into this repo. Late in the session, with Jordan's approval, `.git`, `.claude/`, `.gitignore`, `CLAUDE.md`, `agency/` and `usr/` were **moved** into `~/code/opus-5-5-build-day/`. History is unchanged. `~/code` is no longer a git repo.
 
-**Before greeting the principal**, arm your two dispatch loops. These are standard for every agent, every session (see `agency/CLAUDE-THEAGENCY.md` → "When You Have Mail" for the canonical prompts):
+- Launch from here: `cd ~/code/opus-5-5-build-day && claude`
+- `~/code/tests/` and `~/code/tmp/` were left alone. They were never tracked, and it isn't clear whether the install created them. Ask Jordan before touching them.
+- No GitHub remote yet. If wanted, `the-agency-ai/opus-5-5-build-day` plus an `issues:` target in `agency/config/agency.yaml`.
 
-1. `/loop 5m …silent-when-clean…` — fast-path, picks up new mail between prompts with zero noise
-2. `/loop 30m …visible-when-sitting…` — nag alarm if dispatches are still unread after 30 minutes
+## What we built
 
-Then greet the principal warmly and orient them. Offer the guided tour first — most adopters benefit from it:
+**This Happened!** web-app prototype. One file:
+`agency/workstreams/opus-5-5-build-day/prototypes/this-happened.html`
+It's also published as a private artifact: https://claude.ai/artifact/M3mKd5MsGbdf4iH3xtVfo6 (version 3). To update the same URL from a new session, publish with `url` set to that link after reading it.
 
-> Welcome to The Agency! I'm the captain — your guide to multi-agent development. I'll help you set up **opus-5-5-build-day** and start building.
->
-> Would you like a guided tour? Run `/agency-welcome` for the interactive onboarding flow (5 paths to choose from), or tell me what you want to build and we'll go straight to capturing it as a seed via `/discuss`.
+Three tabs, which are three views of one report record:
+1. **Report it.** "Tallyho", a made-up invoicing app with an embedded assistant. Compact **! ?** controls sit top-right. ! is This Happened, ? is How Do I with Show me and Do it for me. The assistant's export "succeeds" even though the `pdf.export` tool timed out. Saying "It never arrived" makes the assistant offer to report, with the same consent and redaction drawer as !.
+2. **My reports.** The user's reports with a status stepper (Received → Looking into it → Fix on the way → Fixed), plain-language updates, "What you sent", answering the agent's question, and confirming the fix.
+3. **Agent queue.** What a Claude Code agent gets: the redacted bundle, a UUID7 Breadcrumb trail waterfall, trail-to-code, can/can't permissions, and a scripted `/this-happened next` run. It links duplicate reports, reproduces, writes tests, opens a draft PR, then "Approve and merge" sets Fixed.
 
-**Do not wait for a prompt.** Greet the principal as soon as the session starts.
+Both paths were tested headlessly in jsdom: the chat path, and ! with no failure via the answer-a-question loop. Both reach Fixed. The driver scripts lived in the session scratchpad and are not in the repo.
 
-## What's Installed
+**Simulated:** the diagnosis is rules over the bundle, and the code paths and PR #812 are made up.
 
-- 69 skills, 7 commands, 10 agent classes, 9 hooks
-- Quality gate protocol (T1-T4), enforcement triangle, hookify rules
-- Principal sandbox at `usr/jordan/captain/`
-- Methodology: Valueflow (Idea → Seed → Research → Define → Design → Plan → Implement → Ship → Value)
+## Decisions (principal)
 
-## Your Environment
+- Prototype idea A, This Happened, over How Do I for a ~3h build. Then a web-app artifact prototype, informed by the May work in `~/code/this-happened` (seed 2026-04-10, bootstrap 1B1 2026-05-09: two workstreams, full discipline, NestJS + Next.js stack).
+- ! and ? as a compact control top-right, plus reporting from inside the conversation.
+- Embedded assistant in the invoicing app, and both a submitted view and a processing view.
+- Committed with `--force` (no QGR) because it's a demo page, not product code.
 
-- **Principal:** jordan
-- **Project:** opus-5-5-build-day
-- **Config:** `agency/config/agency.yaml`
+## Commits on main (local, not pushed)
 
-## Key Skills For First Session
+- `2bd11d0` feat: This Happened! prototype + BUG-0001 + reports for #491/#492
+- `06f2a10` misc: reports for #493/#494
 
-| Skill | What |
-|-------|------|
-| `/agency-welcome` | Guided onboarding (5 paths) — recommended for first-timers |
-| `/agency-help` | Quick reference |
-| `/discuss` | 1B1 capture of ideas and decisions |
-| `/define` | Drive toward a Product Vision & Requirements (PVR) |
-| `/handoff` | Write a handoff at any boundary |
+## Filed against the-agency (all open)
 
-## Reference
+- #491 settings.json `Write(...)` permission rules no longer honored; migrate to `Edit(...)`. Local copy: `agency/workstreams/housekeeping/bugs/BUG-0001.md`
+- #492 `default_model: "opus"` resolves to Opus 4.8; should default to Claude 5 family
+- #493 **`git-safe-commit` runs `git add -A` by default.** Use `--staged` every time until it's fixed. It nearly committed all of `~/code`.
+- #494 `cp-safe` blocks copies from outside any git repo (the scratchpad)
 
-- `agency/README-GETTINGSTARTED.md` — adopter onboarding
-- `agency/README-THEAGENCY.md` — full orientation
-- `agency/README-ENFORCEMENT.md` — rules, hookify, quality gates
-- `agency/CLAUDE-THEAGENCY.md` — methodology (loaded automatically via the import)
+## Gotchas for next session
 
-## House Rules
-
-- Never write handoffs manually — use `/handoff` skill
-- Never raw `git commit` — use `/git-safe-commit`
-- Never `cd` to the main repo from a worktree — use relative paths from your worktree
-- All tools work from any directory; never prefix with `cd /path/to/main &&`
-
-*OFFENDERS WILL BE FED TO THE — CUTE — ATTACK KITTENS!*
+- Always run `./agency/tools/git-safe-commit ... --staged`. `--body` can't start with `-`, so give it a lead-in line.
+- `agency-identity` logged "cannot resolve identity for 'captain'" in `.claude/logs/tool-runs.jsonl`. Not investigated yet.
+- Possible next ideas: a How Do I deeper pass, a real agent triage call instead of rules, `/this-happened` for Claude Code sessions (idea from earlier), moving the prototype into `~/code/this-happened` as PVR input.
