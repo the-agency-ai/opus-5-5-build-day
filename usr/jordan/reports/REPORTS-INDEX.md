@@ -18,6 +18,8 @@ Each row is one filing. Click through to the per-report markdown for full contex
 
 | 2026-10-13 | settings.json Write(**) permission rules no longer honored — migrate to Edit(**) | bug | the-agency-ai/the-agency | #491 | [report-agency-issue-settings-json-write-permission-rules-no-longer-hon-20261013](usr/jordan/reports/report-agency-issue-settings-json-write-permission-rules-no-longer-hon-20261013.md) | open |
 | 2026-10-13 | Default model resolves to Opus 4.8 (1M) — should default to Claude 5 family (latest/most capable) | bug | the-agency-ai/the-agency | #492 | [report-agency-issue-default-model-resolves-to-opus-4-8-1m-should-defau-20261013](usr/jordan/reports/report-agency-issue-default-model-resolves-to-opus-4-8-1m-should-defau-20261013.md) | open |
+| 2026-10-13 | git-safe-commit runs 'git add -A' by default and commits the whole working tree; --staged is undocumented | bug | the-agency-ai/the-agency | #493 | [report-agency-issue-git-safe-commit-runs-git-add-a-by-default-and-comm-20261013](usr/jordan/reports/report-agency-issue-git-safe-commit-runs-git-add-a-by-default-and-comm-20261013.md) | open |
+| 2026-10-13 | cp-safe blocks copies from outside any git repo (scratchpad, /tmp) into the current worktree | friction | the-agency-ai/the-agency | #494 | [report-agency-issue-cp-safe-blocks-copies-from-outside-any-git-repo-sc-20261013](usr/jordan/reports/report-agency-issue-cp-safe-blocks-copies-from-outside-any-git-repo-sc-20261013.md) | open |
 <!-- AGENCY-ISSUE-INDEX-END -->
 
 ## How to add an entry
