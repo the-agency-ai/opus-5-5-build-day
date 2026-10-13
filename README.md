@@ -8,7 +8,7 @@ One day (2026-10-13) building **This Happened!**, a working prototype of in-app 
 
 When something breaks in an app, people have to describe it from memory. The team that fixes it needs the steps, the network calls, the logs, and what the user actually saw. This Happened! closes that gap:
 
-- **Tap !** to report a problem. The app has already been recording what happened. You see exactly what will be sent, with tokens and personal details redacted in your browser, and nothing leaves until you press Send.
+- **Tap !** to report a problem. The app has already been recording what happened. You see exactly what will be sent. Sign-in tokens, keys, card and phone numbers, and email addresses are removed or masked in your browser by pattern rules, and you review everything before you press Send.
 - **Or tell the assistant**, "It never arrived". It admits what went wrong and offers to file the report for you.
 - **Follow it to a fix** in *My reports*: Received → Looking into it → Fix on the way → Fixed, in plain language, with a question from the team if they need one.
 - **An agent picks it up.** Claude Code gets the redacted bundle and a **Breadcrumb trail**: every hop of each request gets a time-ordered UUID7 that points at its parent, so the agent can follow a failure from the button click to the service that timed out. It triages, reproduces, writes tests and opens a draft PR. A person approves the merge. Triage never marks anything Fixed: if a report looks like one that's already fixed, a person decides.
@@ -39,7 +39,7 @@ Exporting a large month makes the PDF renderer time out after 30 s. Through the 
 - **Product docs:** the product requirements and the architecture & design drafts for This Happened!, written from this prototype and an earlier planning session. They live in the product repo, [the-agency-ai/this-happened](https://github.com/the-agency-ai/this-happened):
   - PVR: [in the repo](https://github.com/the-agency-ai/this-happened/blob/main/agency/workstreams/this-happened/pvr-this-happened-rev1-20261013.md), or [comment on the review copy](https://claude.ai/artifact/WfWqxNNLtcoG2SLJd6uwEa)
   - A&D: [in the repo](https://github.com/the-agency-ai/this-happened/blob/main/agency/workstreams/this-happened/ad-this-happened-rev1-20261013.md), or [comment on the review copy](https://claude.ai/artifact/UiyZzns17R5WQrAKRMtUee)
-- **Tests:** a jsdom test suite for the prototype (517 checks) is in the same repo under [`prototypes/tests/`](https://github.com/the-agency-ai/this-happened/tree/main/agency/workstreams/this-happened/prototypes/tests). Run it with `npm install && npm test`.
+- **Tests:** a jsdom test suite for the prototype (550 checks) is in the same repo under [`prototypes/tests/`](https://github.com/the-agency-ai/this-happened/tree/main/agency/workstreams/this-happened/prototypes/tests). Run it with `npm install && npm test`.
 - **Quality gate:** before release, the prototype and docs went through four parallel reviewers (code, security, design, tests). All 41 findings were fixed ([release v46.25](https://github.com/the-agency-ai/this-happened/releases/tag/v46.25)).
 - **Framework feedback:** five issues filed against The Agency while using it: [#491](https://github.com/the-agency-ai/the-agency/issues/491), [#492](https://github.com/the-agency-ai/the-agency/issues/492), [#493](https://github.com/the-agency-ai/the-agency/issues/493), [#494](https://github.com/the-agency-ai/the-agency/issues/494), [#495](https://github.com/the-agency-ai/the-agency/issues/495). Local copies are in [`usr/jordan/reports/`](usr/jordan/reports/).
 
@@ -54,4 +54,4 @@ Exporting a large month makes the PDF renderer time out after 30 s. Through the 
 
 ## How it was built
 
-Claude Code ran as the Agency *captain*. The parallel parts ran as multi-agent workflows: one agent built live triage while another built How Do I on a separate copy of the file, and the two were merged with `diff3`. Product docs and the quality-gate reviewers also ran as separate agents. Every change went through the framework's safe git tools and commit wrappers.
+Claude Code ran as the Agency *captain*. The parallel parts ran as multi-agent workflows: one agent built live triage while another built How Do I on a separate copy of the file, and the two were merged with `diff3`. Product docs and the quality-gate reviewers also ran as separate agents. Every commit went through the framework's commit wrappers. The one exception was the first push to create this GitHub repo, which the framework has no tool for yet ([#495](https://github.com/the-agency-ai/the-agency/issues/495)).
