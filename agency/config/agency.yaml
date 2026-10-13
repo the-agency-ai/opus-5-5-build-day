@@ -11,7 +11,7 @@ project:
   timezone: "UTC"
 
 framework:
-  version: "unknown"
+  version: "46.48"
   installed_at: "2026-10-13T06:28:58+00:00"
   updated_at: "2026-10-13T06:28:58+00:00"
   source_commit: "3edc4e0b201bcd9c185b34b414fb792145792b67"
